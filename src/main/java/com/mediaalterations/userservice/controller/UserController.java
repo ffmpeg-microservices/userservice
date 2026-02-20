@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 @Validated
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<UserDto> createUser(
             @Valid @RequestBody UserDto dto
     ) {
