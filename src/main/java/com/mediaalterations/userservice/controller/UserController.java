@@ -22,30 +22,37 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<UserDto> createUser(
-            @Valid @RequestBody UserDto dto
-    ) {
+            @Valid @RequestBody UserDto dto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.createUser(dto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") String id) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
+    @GetMapping
+    public ResponseEntity<UserDto> getUser(@RequestHeader("user_id") String userId) {
+        return ResponseEntity.ok(userService.getUser(userId));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileDto> getUserProfile(@RequestHeader("user_id") String userId) {
+        return ResponseEntity.ok(userService.getUserProfile(userId));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/profile")
     public ResponseEntity<UserProfileDto> updateProfile(
-            @PathVariable UUID id,
-            @Valid @RequestBody UserProfileDto dto
-    ) {
+            @PathVariable("id") String id,
+            @Valid @RequestBody UserProfileDto dto) {
         return ResponseEntity.ok(userService.upsertProfile(id, dto));
     }
 }
-

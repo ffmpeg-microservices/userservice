@@ -44,12 +44,25 @@ public class UserService {
         return mapToDto(saved);
     }
 
-    public UserDto getUser(UUID userId) {
+    public UserDto getUser(String userId) {
         User user = getUserOrThrow(userId);
         return mapToDto(user);
     }
 
-    public void deleteUser(UUID userId) {
+    public UserProfileDto getUserProfile(String userId) {
+
+        User user = getUserOrThrow(userId);
+
+        UserProfile profile = user.getUserProfile();
+
+        if (profile == null) {
+            throw new UserNotFoundException("Profile not found for user id: " + userId);
+        }
+
+        return new UserProfileDto(profile.getAddress(), profile.getPhoneNo());
+    }
+
+    public void deleteUser(String userId) {
 
         User user = getUserOrThrow(userId);
 
@@ -58,7 +71,7 @@ public class UserService {
         log.info("User deleted id={}", userId);
     }
 
-    public UserProfileDto upsertProfile(UUID userId, UserProfileDto dto) {
+    public UserProfileDto upsertProfile(String userId, UserProfileDto dto) {
 
         User user = getUserOrThrow(userId);
 
@@ -82,9 +95,12 @@ public class UserService {
         return dto;
     }
 
-    private User getUserOrThrow(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    private User getUserOrThrow(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new UserNotFoundException("User ID is required");
+        }
+        return userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
     }
 
     private UserDto mapToDto(User user) {
@@ -92,7 +108,6 @@ public class UserService {
                 user.getId(),
                 user.getEmail(),
                 user.getFullname(),
-                user.getCreatedAt()
-        );
+                user.getCreatedAt());
     }
 }
