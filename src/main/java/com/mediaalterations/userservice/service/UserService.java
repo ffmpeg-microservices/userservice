@@ -32,7 +32,12 @@ public class UserService {
             throw new UserAlreadyExistsException("Email already registered");
         }
 
+        if (dto.id() == null) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+
         User user = User.builder()
+                .id(dto.id())
                 .email(dto.email())
                 .fullname(dto.fullname())
                 .build();
