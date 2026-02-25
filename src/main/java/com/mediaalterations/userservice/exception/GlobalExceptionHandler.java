@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         log.error("User not found: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiError(ex.getMessage(),HttpStatus.NOT_FOUND.value()));
+                .body(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -30,11 +30,13 @@ public class GlobalExceptionHandler {
         log.error("Conflict: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ApiError(ex.getMessage(),HttpStatus.CONFLICT.value()));
+                .body(new ApiError(ex.getMessage(), HttpStatus.CONFLICT.value()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
+
+        log.error("Validation failed: {}", ex.getMessage());
 
         String message = ex.getBindingResult()
                 .getFieldErrors()
@@ -43,13 +45,13 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
 
         return ResponseEntity.badRequest()
-                .body(new ApiError(message,HttpStatus.BAD_REQUEST.value()));
+                .body(new ApiError(message, HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex) {
 
-        log.error("Unexpected error", ex);
+        log.error("Unexpected error {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiError("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR.value()));

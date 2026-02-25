@@ -37,6 +37,9 @@ public class UserService {
                 .fullname(dto.fullname())
                 .build();
 
+        // @CreationTimestamp is populated ONLY when Hibernate executes the INSERT
+        // If we want to have the createdAt value immediately, we can call saveAndFlush
+        // to force the insert and get the generated timestamp.
         User saved = userRepository.saveAndFlush(user);
 
         log.info("User created with id={}", saved.getId());
