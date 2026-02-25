@@ -37,7 +37,7 @@ public class UserService {
                 .fullname(dto.fullname())
                 .build();
 
-        User saved = userRepository.save(user);
+        User saved = userRepository.saveAndFlush(user);
 
         log.info("User created with id={}", saved.getId());
 
@@ -45,11 +45,14 @@ public class UserService {
     }
 
     public UserDto getUser(String userId) {
+        log.info("Fetching user with id={}", userId);
         User user = getUserOrThrow(userId);
         return mapToDto(user);
     }
 
     public UserProfileDto getUserProfile(String userId) {
+
+        log.info("Fetching profile for user id={}", userId);
 
         User user = getUserOrThrow(userId);
 
@@ -63,6 +66,8 @@ public class UserService {
     }
 
     public void deleteUser(String userId) {
+
+        log.info("Deleting user with id={}", userId);
 
         User user = getUserOrThrow(userId);
 
