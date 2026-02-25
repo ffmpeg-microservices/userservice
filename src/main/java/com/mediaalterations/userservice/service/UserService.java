@@ -26,7 +26,7 @@ public class UserService {
 
     public UserDto createUser(UserDto dto) {
 
-        log.info("Creating user with email={}", dto.email());
+        log.info("Creating user with email={} id={}, {}", dto.email(), dto.id(), dto);
 
         if (userRepository.existsByEmail(dto.email())) {
             throw new UserAlreadyExistsException("Email already registered");
